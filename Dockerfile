@@ -1,6 +1,9 @@
-FROM openjdk:13-jdk-alpine
+FROM openjdk:8-jdk-alpine
 MAINTAINER magno.mabreu@gmail.com
-COPY ./target/sistram-1.0.war /opt/lib/
+RUN mkdir /foms/
+COPY ./foms /foms/
+COPY ./target/sistramproxy-1.0.war /opt/portico-2.1.0/
+WORKDIR /opt/portico-2.1.0/
 ENTRYPOINT ["java"]
 ENV LANG=pt_BR.utf8 
-CMD ["-jar", "/opt/lib/sistram-1.0.war"]
+CMD ["-jar", "/opt/portico-2.1.0/sistramproxy-1.0.war"]
