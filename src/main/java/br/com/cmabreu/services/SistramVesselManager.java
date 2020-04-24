@@ -59,7 +59,7 @@ public class SistramVesselManager {
 	private void publish() throws Exception {
 		// get all the handle information for the attributes
 		logger.info("Objetos publicados.");
-		this.entityHandle = this.rtiAmb.getObjectClassHandle("HLAobjectRoot.BaseEntity.PhysicalEntity.Platform.Aircraft");
+		this.entityHandle = this.rtiAmb.getObjectClassHandle("HLAobjectRoot.BaseEntity.PhysicalEntity.Platform.SurfaceVessel");
 		this.entityTypeHandle = this.rtiAmb.getAttributeHandle(entityHandle, "EntityType");
 		this.spatialHandle = this.rtiAmb.getAttributeHandle(entityHandle, "Spatial");
 		this.forceIdentifierHandle = this.rtiAmb.getAttributeHandle(entityHandle, "ForceIdentifier");
