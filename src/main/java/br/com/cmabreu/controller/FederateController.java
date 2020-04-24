@@ -64,9 +64,10 @@ public class FederateController {
 			@RequestParam(value = "alt", required = true) float alt,
 			@RequestParam(value = "head", required = true) float head, 
 			@RequestParam(value = "pitch", required = true) float pitch,
-			@RequestParam(value = "roll", required = true) float roll) {
+			@RequestParam(value = "roll", required = true) float roll,
+			@RequestParam(value = "veloc", required = true) float veloc) {
 		try {
-			SistramVessel aircraft = federateService.update( identificador, lat, lon, alt, head, pitch, roll );
+			SistramVessel aircraft = federateService.update( identificador, lat, lon, alt, head, pitch, roll, veloc );
 			return aircraft;
 		} catch ( Exception e ) {
 			e.printStackTrace();

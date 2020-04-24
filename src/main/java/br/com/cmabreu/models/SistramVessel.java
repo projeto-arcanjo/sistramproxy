@@ -20,6 +20,7 @@ import edu.nps.moves.disenum.EntityDomain;
 import edu.nps.moves.disenum.EntityKind;
 import edu.nps.moves.disenum.ForceID;
 import edu.nps.moves.disenum.PlatformAir;
+import edu.nps.moves.disenum.PlatformSurface;
 import hla.rti1516e.AttributeHandleValueMap;
 import hla.rti1516e.ObjectInstanceHandle;
 import hla.rti1516e.RtiFactoryFactory;
@@ -86,13 +87,13 @@ public class SistramVessel implements Serializable {
 		 *  
 		 */
 		
-		
+		// 1.3.29.6.2.3 = Freagata Rademaker
 		this.entityType = new EntityType(  
 				(byte) EntityKind.PLATFORM.getValue(),
-				(byte) EntityDomain.AIR.getValue(),
+				(byte) EntityDomain.SURFACE.getValue(),
 				(byte) CountryType.BRAZIL.getValue(),
-				(byte) PlatformAir.ATTACK_HELICOPTER.getValue(),
-				(byte) 13, 
+				(byte) PlatformSurface.GUIDED_MISSILE_FRIGATE_FFG.getValue(),
+				(byte) 2, 
 				(byte) 3, 
 				(byte) 0 
 		);
@@ -117,7 +118,7 @@ public class SistramVessel implements Serializable {
         
         int handle = new EncoderDecoder().getObjectHandle(this.objectInstanceHandle  );
         
-        logger.info("Nova aeronave '"+ identificador + "' [" + handle + "] pronta em " + latitude + "," + longitude + " " + altitude);
+        logger.info("Novo navio '"+ identificador + "' [" + handle + "] pronto em " + latitude + "," + longitude + " " + altitude);
 	}
 	
 	public void updateAllValues() throws Exception {
@@ -317,6 +318,22 @@ public class SistramVessel implements Serializable {
 
 	public void setOrientationPhi(float orientationPhi) {
 		this.orientationPhi = orientationPhi;
+	}
+
+	
+
+	public void setVelocityX(float velocityX) {
+		this.velocityX = velocityX;
+	}
+
+
+	public void setVelocityY(float velocityY) {
+		this.velocityY = velocityY;
+	}
+
+
+	public void setVelocityZ(float velocityZ) {
+		this.velocityZ = velocityZ;
 	}
 
 

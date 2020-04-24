@@ -30,10 +30,10 @@ public class SistramVesselManager {
 	private AttributeHandle entityIdentifierHandle;
 	private AttributeHandle damageStateHandle;
 	private static SistramVesselManager instance;
-	private List<SistramVessel> aircrafts;
+	private List<SistramVessel> navios;
 	
 	private SistramVessel exists( String id ) {
-		for( SistramVessel ac : this.aircrafts ) {
+		for( SistramVessel ac : this.navios ) {
 			if( ac.getIdentificador().equals(id) ) return ac;
 		}
 		return null;
@@ -50,8 +50,8 @@ public class SistramVesselManager {
 	}
 	
 	private SistramVesselManager( RTIambassador rtiAmb ) throws Exception {
-		this.aircrafts = new ArrayList<SistramVessel>();
-		logger.info("FlightRadar Aircraft Manager ativo");
+		this.navios = new ArrayList<SistramVessel>();
+		logger.info("Gerenciador SISTRAM ativo");
 		this.rtiAmb = rtiAmb;
 		this.publish();
 	}
@@ -135,14 +135,14 @@ public class SistramVesselManager {
 		}
 	}
 
-	public SistramVessel update(String identificador, float lat, float lon, float alt, float head, float pitch, float roll) throws Exception {
+	public SistramVessel update(String identificador, float lat, float lon, float alt, float head, float pitch, float roll, float veloc) throws Exception {
 		
     	// Verifica se já tenho esta aeronave
     	SistramVessel ac = this.exists( identificador );
     	if( ac == null ) {
     		// se não tiver eu crio na minha lista
     		ac = new SistramVessel( this, identificador );
-    		this.aircrafts.add( ac );
+    		this.navios.add( ac );
     	} else {
     		//
     	}
@@ -150,10 +150,11 @@ public class SistramVesselManager {
 		// Preenche os atributos da aeronave com os dados do FlightRadar24
 		// O numero do voo identifica unicamente uma aeronave
 		// Envia as atualizacoes para a RTI
-		ac.setAltitude( (float)alt );
-		ac.setLongitude( (float)lon );
-		ac.setLatitude( (float)lat );
-		ac.setOrientationPhi( (float)head );
+		ac.setAltitude( alt );
+		ac.setLongitude( lon );
+		ac.setLatitude( lat );
+		ac.setVelocityX( veloc );
+		ac.setOrientationPhi( head );
 		
 		// Manda a atualizacao para a RTI
 		ac.sendSpatialVariant();		
@@ -163,23 +164,28 @@ public class SistramVesselManager {
 	
 	public void updateVessel( JSONObject vesselJsonData ) throws Exception {
 		/*
-  {
-    "id_origem_dados_pontos": "1590814415",
-    "lon": "-38.9857383333333",
-    "lat": "-23.3274733333333",
-    "rumo": "0",
-    "veloc": "0",
-    "irin": "",
-    "mmsi": "993116063",
-    "dh": "2020-04-17 01:40:49-03",
-    "imo": "0",
-    "fonte": "AIS-S",
-    "id_origem_dados": "29",
-    "nome_navio": ""
-  },    	
+		  {
+		    "id_origem_dados_pontos": "1590814415",
+		    "lon": "-38.9857383333333",
+		    "lat": "-23.3274733333333",
+		    "rumo": "0",
+		    "veloc": "0",
+		    "irin": "",
+		    "mmsi": "993116063",
+		    "dh": "2020-04-17 01:40:49-03",
+		    "imo": "0",
+		    "fonte": "AIS-S",
+		    "id_origem_dados": "29",
+		    "nome_navio": ""
+		  },    	
 		*/
-
-    	//this.update(arID, (float)lat, (float)lon, (float)alt, (float)heading, 0, 0);
+		String identificador = vesselJsonData.getString("mmsi");
+		Float lat = Float.valueOf( vesselJsonData.getString("lat") );
+		Float lon = Float.valueOf( vesselJsonData.getString("lon") );
+		Float heading = Float.valueOf( vesselJsonData.getString("rumo") );
+		Float veloc = Float.valueOf( vesselJsonData.getString("veloc") );
+		String nome = vesselJsonData.getString("nome_navio");
+    	this.update(identificador + "." + nome, lat, lon, 0, heading, 0, 0, veloc);
 	}
 	
 }

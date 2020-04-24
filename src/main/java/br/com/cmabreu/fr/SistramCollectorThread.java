@@ -49,7 +49,7 @@ public class SistramCollectorThread implements Runnable {
     			manager.updateVessel( vessel );
             }         		
     		
-    		logger.info( vessels.length() + " aeronaves coletadas.");
+    		logger.info( vessels.length() + " navios coletados.");
     		
     	} catch( Exception se ) {
     		se.printStackTrace();

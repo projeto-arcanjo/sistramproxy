@@ -241,22 +241,20 @@ public class FederateService {
 	}
 	
 	private byte[] generateTag() {
-		return ( "XPLANE_" + System.currentTimeMillis()).getBytes();
+		return ( "SISTRAM_" + System.currentTimeMillis()).getBytes();
 	}	
 	
 	public void publish() throws Exception {
-		// Quem vai publicar uma aeronave eh o software X-Plane quando enviar dados.
-		// Até la, nada de aviao por aqui.
+		// Publicar somente quando aparecer navios
 	}
 
 	public SistramVessel spawn( String identificador ) throws Exception {
-		SistramVessel aircraft = SistramVesselManager.getInstance().spawn( identificador );
-		return aircraft;
+		return SistramVesselManager.getInstance().spawn( identificador );
 		
 	}
 
-	public SistramVessel update( String identificador, float lat, float lon, float alt, float head, float pitch, float roll ) throws Exception {
-		return SistramVesselManager.getInstance().update( identificador, lat, lon, alt, head, pitch, roll);
+	public SistramVessel update( String identificador, float lat, float lon, float alt, float head, float pitch, float roll, float veloc ) throws Exception {
+		return SistramVesselManager.getInstance().update( identificador, lat, lon, alt, head, pitch, roll, veloc);
 	}
 	
 	
