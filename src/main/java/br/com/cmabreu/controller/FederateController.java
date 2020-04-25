@@ -48,8 +48,8 @@ public class FederateController {
 	@RequestMapping(value = "/spawn", method = RequestMethod.GET, produces=MediaType.APPLICATION_JSON_UTF8_VALUE )
 	public @ResponseBody SistramVessel spawn( @RequestParam(value = "identificador", required = true) String identificador ) {
 		try {
-			SistramVessel aircraft = federateService.spawn( identificador );
-			return aircraft;
+			SistramVessel vessel = federateService.spawn( identificador );
+			return vessel;
 		} catch ( Exception e ) {
 			e.printStackTrace();
 			return null;

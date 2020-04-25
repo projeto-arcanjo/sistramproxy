@@ -126,11 +126,13 @@ public class SistramVesselManager {
 	}
 
 	public SistramVessel spawn( String identificador ) throws Exception {
-		return null;
+		SistramVessel temp = new SistramVessel( this, identificador );
+		this.navios.add( temp );
+		return temp;
 	}
 	
-	public void update( List<SistramVessel> aircrafts ) throws Exception {
-		for( SistramVessel ac : aircrafts  ) {
+	public void update( List<SistramVessel> navios ) throws Exception {
+		for( SistramVessel ac : navios  ) {
 			ac.sendSpatialVariant();
 		}
 	}

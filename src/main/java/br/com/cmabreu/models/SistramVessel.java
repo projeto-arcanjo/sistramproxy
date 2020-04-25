@@ -87,7 +87,7 @@ public class SistramVessel implements Serializable {
 		 *  
 		 */
 		
-		// 1.3.29.6.2.3 = Freagata Rademaker
+		// 1.3.29.6.2.3 = Fragata Rademaker
 		this.entityType = new EntityType(  
 				(byte) EntityKind.PLATFORM.getValue(),
 				(byte) EntityDomain.SURFACE.getValue(),
@@ -101,8 +101,8 @@ public class SistramVessel implements Serializable {
 		this.spatialVariant = new SpatialVariant();
 		this.forceIdentifier = new ForceIdentifier( (byte)ForceID.NEUTRAL.value );
 		this.marking = new Marking( this.identificador );
-		this.latitude = (float)-23.0;
-		this.longitude = (float)-45.0;
+		this.latitude = (float)-23.144621;
+		this.longitude = (float)-40.95873;
 		this.altitude = (float)0.0;
 		this.isConcealed = (byte)0;
 		this.velocityX = (float) 0.0;
