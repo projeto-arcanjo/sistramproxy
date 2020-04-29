@@ -191,7 +191,6 @@ public class SistramVesselManager {
 		for( SistramVessel navio : navios ) {
 			if( navio.getObjectInstanceHandle().equals( theObject) ) navio.updateAllValues();
 		}
-		
 	}
 	
 }
