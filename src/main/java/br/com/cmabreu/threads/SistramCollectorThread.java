@@ -1,4 +1,4 @@
-package br.com.cmabreu.fr;
+package br.com.cmabreu.threads;
 
 
 import java.util.Arrays;
@@ -28,7 +28,7 @@ public class SistramCollectorThread implements Runnable {
 	}
 	
     public SistramCollectorThread( ) {
-    	logger.info("Coletor Iniciado");
+    	logger.info("coletor iniciado");
     	this.running = true;
     	this.manager = SistramVesselManager.getInstance();
     }  
@@ -39,25 +39,20 @@ public class SistramCollectorThread implements Runnable {
     		return;
     	}
     	
-    	System.out.println("Coletando...");
-    	
     	try {
     		String vessels = getVessels();
     		JSONArray obj = new JSONArray( vessels );
+    		
     		for( int x=0; x < obj.length(); x++  ) {
     			JSONObject vessel = obj.getJSONObject( x );
     			manager.updateVessel( vessel );
-            }         		
-    		
-    		logger.info( vessels.length() + " navios coletados.");
+            }
     		
     	} catch( Exception se ) {
     		se.printStackTrace();
     		logger.error( se.getMessage() );
     	}
         	
-        
-        
     }  
     
 

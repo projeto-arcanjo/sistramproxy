@@ -16,11 +16,13 @@ import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Service;
 
 import br.com.cmabreu.FederateAmbassador;
-import br.com.cmabreu.FederateExecutorThread;
-import br.com.cmabreu.fr.SistramCollectorThread;
 import br.com.cmabreu.misc.EncoderDecoder;
 import br.com.cmabreu.models.SistramVessel;
+import br.com.cmabreu.threads.FederateExecutorThread;
+import br.com.cmabreu.threads.SistramCollectorThread;
+import hla.rti1516e.AttributeHandleSet;
 import hla.rti1516e.CallbackModel;
+import hla.rti1516e.ObjectInstanceHandle;
 import hla.rti1516e.RTIambassador;
 import hla.rti1516e.ResignAction;
 import hla.rti1516e.RtiFactoryFactory;
@@ -253,8 +255,17 @@ public class FederateService {
 		
 	}
 
-	public SistramVessel update( String identificador, float lat, float lon, float alt, float head, float pitch, float roll, float veloc ) throws Exception {
-		return SistramVesselManager.getInstance().update( identificador, lat, lon, alt, head, pitch, roll, veloc);
+	public SistramVessel sendToRTI( String identificador, float lat, float lon, float alt, float head, float pitch, float roll, float veloc ) throws Exception {
+		return SistramVesselManager.getInstance().sendToRTI( identificador, lat, lon, alt, head, pitch, roll, veloc);
+	}
+
+	public void provideAttributeValueUpdate( ObjectInstanceHandle theObject, AttributeHandleSet theAttributes, byte[] userSuppliedTag ) {
+		// A RTI esta pedindo meus atributos
+		try {
+			SistramVesselManager.getInstance().provideAttributeValueUpdate( theObject, theAttributes );
+		} catch ( Exception e ) {
+			e.printStackTrace();
+		}
 	}
 	
 	

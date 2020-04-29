@@ -12,6 +12,7 @@ import hla.rti1516e.AttributeHandle;
 import hla.rti1516e.AttributeHandleSet;
 import hla.rti1516e.InteractionClassHandle;
 import hla.rti1516e.ObjectClassHandle;
+import hla.rti1516e.ObjectInstanceHandle;
 import hla.rti1516e.RTIambassador;
 
 public class SistramVesselManager {
@@ -32,13 +33,6 @@ public class SistramVesselManager {
 	private static SistramVesselManager instance;
 	private List<SistramVessel> navios;
 	
-	private SistramVessel exists( String id ) {
-		for( SistramVessel ac : this.navios ) {
-			if( ac.getIdentificador().equals(id) ) return ac;
-		}
-		return null;
-	}
-	
 	private Logger logger = LoggerFactory.getLogger( SistramVesselManager.class );
 	
 	public static SistramVesselManager getInstance() {
@@ -58,7 +52,6 @@ public class SistramVesselManager {
 	
 	private void publish() throws Exception {
 		// get all the handle information for the attributes
-		logger.info("Objetos publicados.");
 		this.entityHandle = this.rtiAmb.getObjectClassHandle("HLAobjectRoot.BaseEntity.PhysicalEntity.Platform.SurfaceVessel");
 		this.entityTypeHandle = this.rtiAmb.getAttributeHandle(entityHandle, "EntityType");
 		this.spatialHandle = this.rtiAmb.getAttributeHandle(entityHandle, "Spatial");
@@ -81,6 +74,9 @@ public class SistramVesselManager {
         
         this.interactionHandle = this.rtiAmb.getInteractionClassHandle("Acknowledge");
         this.rtiAmb.publishInteractionClass(interactionHandle);
+        
+		logger.info("publicado como PhysicalEntity.Platform.SurfaceVessel");
+        
 	}
 
 	/* GETTERS e SETTERS */
@@ -137,31 +133,32 @@ public class SistramVesselManager {
 		}
 	}
 
-	public SistramVessel update(String identificador, float lat, float lon, float alt, float head, float pitch, float roll, float veloc) throws Exception {
-		
-    	// Verifica se já tenho esta aeronave
-    	SistramVessel ac = this.exists( identificador );
-    	if( ac == null ) {
-    		// se não tiver eu crio na minha lista
-    		ac = new SistramVessel( this, identificador );
-    		this.navios.add( ac );
-    	} else {
-    		//
+	public synchronized SistramVessel sendToRTI(String identificador, float lat, float lon, float alt, float head, float pitch, float roll, float veloc) throws Exception {
+
+		for( SistramVessel ac : this.navios ) {
+    		if( identificador.equals( ac.getIdentificador() ) ) {
+	    		// Preenche os atributos da aeronave com os dados do FlightRadar24
+	    		// O numero do voo identifica unicamente uma aeronave
+	    		// Envia as atualizacoes para a RTI
+	    		ac.setAltitude( alt );
+	    		ac.setLongitude( lon );
+	    		ac.setLatitude( lat );
+	    		ac.setVelocityX( veloc );
+	    		ac.setOrientationPhi( head );
+	    		
+	    		// Manda a atualizacao para a RTI
+	    		ac.sendSpatialVariant();
+	    		return ac;
+    		}
     	}
 
-		// Preenche os atributos da aeronave com os dados do FlightRadar24
-		// O numero do voo identifica unicamente uma aeronave
-		// Envia as atualizacoes para a RTI
-		ac.setAltitude( alt );
-		ac.setLongitude( lon );
-		ac.setLatitude( lat );
-		ac.setVelocityX( veloc );
-		ac.setOrientationPhi( head );
-		
-		// Manda a atualizacao para a RTI
-		ac.sendSpatialVariant();		
-		
-		return ac;
+    	// se eu cheguei aqui eh porque nao achei um navio com esse ID
+    	// crio e retorno. 
+    	// NAO PRECISO ENVIAR A ATUALIZACAO PORQUE NA CRIACAO ELE JA MANDA !!
+    	SistramVessel ac = new SistramVessel( this, identificador, lat, lon, alt, head, pitch, roll, veloc );
+   		this.navios.add( ac );
+   		return ac;
+    	
 	}
 	
 	public void updateVessel( JSONObject vesselJsonData ) throws Exception {
@@ -187,7 +184,14 @@ public class SistramVesselManager {
 		Float heading = Float.valueOf( vesselJsonData.getString("rumo") );
 		Float veloc = Float.valueOf( vesselJsonData.getString("veloc") );
 		String nome = vesselJsonData.getString("nome_navio");
-    	this.update(identificador + "." + nome, lat, lon, 0, heading, 0, 0, veloc);
+    	this.sendToRTI(identificador + "#" + nome, lat, lon, 0, heading, 0, 0, veloc);
+	}
+
+	public void provideAttributeValueUpdate(ObjectInstanceHandle theObject, AttributeHandleSet theAttributes) throws Exception {
+		for( SistramVessel navio : navios ) {
+			if( navio.getObjectInstanceHandle().equals( theObject) ) navio.updateAllValues();
+		}
+		
 	}
 	
 }

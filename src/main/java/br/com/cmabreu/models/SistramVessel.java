@@ -11,7 +11,6 @@ import br.com.cmabreu.codec.EntityType;
 import br.com.cmabreu.codec.ForceIdentifier;
 import br.com.cmabreu.codec.Marking;
 import br.com.cmabreu.codec.SpatialVariant;
-import br.com.cmabreu.misc.EncoderDecoder;
 import br.com.cmabreu.misc.Environment;
 import br.com.cmabreu.services.SistramVesselManager;
 import edu.nps.moves.disenum.CountryType;
@@ -19,7 +18,6 @@ import edu.nps.moves.disenum.DamageState;
 import edu.nps.moves.disenum.EntityDomain;
 import edu.nps.moves.disenum.EntityKind;
 import edu.nps.moves.disenum.ForceID;
-import edu.nps.moves.disenum.PlatformAir;
 import edu.nps.moves.disenum.PlatformSurface;
 import hla.rti1516e.AttributeHandleValueMap;
 import hla.rti1516e.ObjectInstanceHandle;
@@ -57,6 +55,9 @@ public class SistramVessel implements Serializable {
 	private String identificador;
 	private Logger logger = LoggerFactory.getLogger( SistramVessel.class );
 	
+	public ObjectInstanceHandle getObjectInstanceHandle() {
+		return objectInstanceHandle;
+	}
 	
 	public boolean isMe( String identificador ) {
 		return identificador.equals( this.identificador );
@@ -67,7 +68,13 @@ public class SistramVessel implements Serializable {
 					NETN-FOM.pdf 
 	*/
 	
+	// Este construtor era usado pela interface para criar navios de teste.
+	// Agora nao posso mexer nisso
 	public SistramVessel( SistramVesselManager manager, String identificador ) throws Exception {
+		logger.error("Este construtor foi desativado");
+	}
+	
+	public SistramVessel( SistramVesselManager manager, String identificador, float lat, float lon, float alt, float head, float pitch, float roll, float veloc ) throws Exception {
 		this.manager = manager;
 		
 		this.objectInstanceHandle = this.manager.getRtiAmb().registerObjectInstance( manager.getEntityHandle() );
@@ -101,24 +108,17 @@ public class SistramVessel implements Serializable {
 		this.spatialVariant = new SpatialVariant();
 		this.forceIdentifier = new ForceIdentifier( (byte)ForceID.NEUTRAL.value );
 		this.marking = new Marking( this.identificador );
-		this.latitude = (float)-23.144621;
-		this.longitude = (float)-40.95873;
-		this.altitude = (float)0.0;
+		this.latitude = lat;
+		this.longitude = lon;
+		this.altitude = alt;
 		this.isConcealed = (byte)0;
-		this.velocityX = (float) 0.0;
+		this.velocityX = veloc;
 		this.velocityY = (float) 0.0;
 		this.velocityZ = (float) 0.0;
-		this.orientationPhi = (float)0.0;
+		this.orientationPhi = head;
 		this.orientationTheta = (float)0.0;
 		this.orientationPsi = (float)0.0;
 		this.damageState = (byte)DamageState.NO_DAMAGE.getValue();
-		
-		
-        updateAllValues();
-        
-        int handle = new EncoderDecoder().getObjectHandle(this.objectInstanceHandle  );
-        
-        logger.info("Novo navio '"+ identificador + "' [" + handle + "] pronto em " + latitude + "," + longitude + " " + altitude);
 	}
 	
 	public void updateAllValues() throws Exception {
@@ -168,6 +168,8 @@ public class SistramVessel implements Serializable {
 		
 		// ENVIA O UPDATE PARA A RTI
 		manager.getRtiAmb().updateAttributeValues( this.objectInstanceHandle, ahvm, null );
+		
+		logger.info("enviados atributos de " + getIdentificador() );
 		
 	}
 
