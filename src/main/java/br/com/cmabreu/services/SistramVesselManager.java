@@ -156,6 +156,7 @@ public class SistramVesselManager {
     	// crio e retorno. 
     	// NAO PRECISO ENVIAR A ATUALIZACAO PORQUE NA CRIACAO ELE JA MANDA !!
     	SistramVessel ac = new SistramVessel( this, identificador, lat, lon, alt, head, pitch, roll, veloc );
+    	logger.info("novo navio " + identificador );
    		this.navios.add( ac );
    		return ac;
     	
