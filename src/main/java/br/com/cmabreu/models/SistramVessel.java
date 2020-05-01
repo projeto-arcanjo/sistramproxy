@@ -169,8 +169,6 @@ public class SistramVessel implements Serializable {
 		// ENVIA O UPDATE PARA A RTI
 		manager.getRtiAmb().updateAttributeValues( this.objectInstanceHandle, ahvm, null );
 		
-		logger.info("enviados atributos de " + getIdentificador() );
-		
 	}
 
 	/*
