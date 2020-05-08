@@ -111,6 +111,19 @@ public class FederateService {
     }
 
 
+    // Ajusta o centro da busca por navios no SISTRAM
+    public void setCenter( double lat, double lon ) throws Exception {
+    	( (SistramCollectorThread)this.frCollectorThread ).setCenter(lat, lon);
+    }
+    
+    public void setRadiusInMiles( int radius ) throws Exception {
+    	( (SistramCollectorThread)this.frCollectorThread ).setRadiusInMiles( radius );
+    }
+    
+    public void setTestMode( boolean testMode ) throws Exception {
+    	( (SistramCollectorThread)this.frCollectorThread ).setTestMode( testMode );
+    }
+    
 	// Inicia o coletor FlightRadar24
 	// Acionado somente pelo Controller REST
     public void startCollector() {

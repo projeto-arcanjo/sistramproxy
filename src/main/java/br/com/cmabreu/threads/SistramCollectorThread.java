@@ -22,14 +22,26 @@ public class SistramCollectorThread implements Runnable {
     private boolean running;
 	private Logger logger = LoggerFactory.getLogger( SistramCollectorThread.class );
 	private SistramVesselManager manager;
+	private int radius;
+	private double lat;
+	private double lon;
+	private boolean testMode;
 	
 	public void finish() {
 		this.running = false;
 	}
 	
+	public void setTestMode( boolean testMode ) {
+		this.testMode = testMode;
+	}
+	
     public SistramCollectorThread( ) {
     	logger.info("coletor iniciado");
+    	this.radius = 1000;
+    	this.lon = -40.81010333333333;
+    	this.lat = -22.70383333333332;
     	this.running = true;
+    	this.testMode = false;
     	this.manager = SistramVesselManager.getInstance();
     }  
     
@@ -43,7 +55,11 @@ public class SistramCollectorThread implements Runnable {
     		String vessels = getVessels();
     		JSONArray obj = new JSONArray( vessels );
     		
-    		for( int x=0; x < obj.length(); x++  ) {
+    		int totalToProcess = 5;
+    		if( totalToProcess > obj.length() ) totalToProcess = obj.length();
+    		if( !testMode ) totalToProcess = obj.length();
+    		
+    		for( int x=0; x < totalToProcess; x++  ) {
     			JSONObject vessel = obj.getJSONObject( x );
     			manager.updateVessel( vessel );
             }
@@ -55,11 +71,19 @@ public class SistramCollectorThread implements Runnable {
         	
     }  
     
-
+    public void setRadiusInMiles( int radius ) {
+    	this.radius = radius;
+    }
+    
+    public void setCenter( double lat, double lon ) {
+    	this.lat = lat;
+    	this.lon = lon;
+    }
+    
 	private String getVessels() {
 		RestTemplate restTemplate = new RestTemplate();
 		String responseBody;
-		String url = "http://www.sistram.mar.mil.br/apolo/BuscaEmArea.php?long=-40.81010333333333&lat=-22.703833333333332&raio=1000";
+		String url = "http://www.sistram.mar.mil.br/apolo/BuscaEmArea.php?long="+lon+"&lat="+lat+"&raio=" + radius;
 		try {
 			HttpHeaders headers = new HttpHeaders();
             headers.setAccept(Arrays.asList(MediaType.APPLICATION_JSON));

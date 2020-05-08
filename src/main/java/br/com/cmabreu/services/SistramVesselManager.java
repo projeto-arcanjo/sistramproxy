@@ -33,7 +33,23 @@ public class SistramVesselManager {
 	private static SistramVesselManager instance;
 	private List<SistramVessel> navios;
 	
+	private int siteID = 3001;
+	private int applicationID = 101;
+	private int entityNumber = 0;
+	
 	private Logger logger = LoggerFactory.getLogger( SistramVesselManager.class );
+	
+	public int getSiteID() {
+		return siteID;
+	}
+	
+	public int getEntityNumber() {
+		return entityNumber;
+	}
+	
+	public int getApplicationID() {
+		return applicationID;
+	}
 	
 	public static SistramVesselManager getInstance() {
 		return instance;
@@ -122,9 +138,12 @@ public class SistramVesselManager {
 	}
 
 	public SistramVessel spawn( String identificador ) throws Exception {
-		SistramVessel temp = new SistramVessel( this, identificador );
-		this.navios.add( temp );
-		return temp;
+		Float lat = -22.82760f;
+		Float lon = -43.21417f;
+		Float heading = 0.0f;
+		Float veloc = 0.0f;
+		String nome = "USER_CREATED";
+		return this.sendToRTI(identificador + "#" + nome, lat, lon, 0, heading, 0, 0, veloc);
 	}
 	
 	public void update( List<SistramVessel> navios ) throws Exception {
@@ -154,7 +173,8 @@ public class SistramVesselManager {
 
     	// se eu cheguei aqui eh porque nao achei um navio com esse ID
     	// crio e retorno. 
-    	// NAO PRECISO ENVIAR A ATUALIZACAO PORQUE NA CRIACAO ELE JA MANDA !!
+    	// NAO PRECISO ENVIAR A ATUALIZACAO. Quando ele for criado os outros Federados vao pedir os atributos.
+		this.entityNumber++;
     	SistramVessel ac = new SistramVessel( this, identificador, lat, lon, alt, head, pitch, roll, veloc );
     	logger.info("novo navio " + identificador );
    		this.navios.add( ac );

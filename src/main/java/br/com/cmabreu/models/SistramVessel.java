@@ -68,15 +68,8 @@ public class SistramVessel implements Serializable {
 					NETN-FOM.pdf 
 	*/
 	
-	// Este construtor era usado pela interface para criar navios de teste.
-	// Agora nao posso mexer nisso
-	public SistramVessel( SistramVesselManager manager, String identificador ) throws Exception {
-		logger.error("Este construtor foi desativado");
-	}
-	
 	public SistramVessel( SistramVesselManager manager, String identificador, float lat, float lon, float alt, float head, float pitch, float roll, float veloc ) throws Exception {
 		this.manager = manager;
-		
 		this.objectInstanceHandle = this.manager.getRtiAmb().registerObjectInstance( manager.getEntityHandle() );
 		this.encoderFactory = RtiFactoryFactory.getRtiFactory().getEncoderFactory(); 
 		this.identificador = identificador;
@@ -84,7 +77,7 @@ public class SistramVessel implements Serializable {
 		this.codec = new Codec( this.encoderFactory );
 		
 		// Seta as variaveis internas
-		this.entityIdentifier = new EntityIdentifier( 3001, 101, 102 );
+		this.entityIdentifier = new EntityIdentifier( manager.getSiteID(), manager.getApplicationID(), manager.getEntityNumber() );
 		
 		/*
 		 * 		Consultar o SISO-010-2019

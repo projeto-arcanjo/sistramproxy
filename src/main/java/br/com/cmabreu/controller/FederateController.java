@@ -33,7 +33,37 @@ public class FederateController {
     	return "ok";
 	}
     
+
+	@RequestMapping(value = "/setcenter", method = RequestMethod.GET, produces=MediaType.APPLICATION_JSON_UTF8_VALUE )
+	public @ResponseBody String setCenter( @RequestParam(value = "lat", required = true) int lat , @RequestParam(value = "lon", required = true) int lon ) {
+		try {
+			federateService.setCenter( lat, lon );
+		} catch ( Exception e ) {
+			return "NOT_STARTED";
+		}
+		return "ok";
+	}
     
+	@RequestMapping(value = "/setradius", method = RequestMethod.GET, produces=MediaType.APPLICATION_JSON_UTF8_VALUE )
+	public @ResponseBody String setRadiusInMiles( @RequestParam(value = "radius", required = true) int radius ) {
+		try {
+			federateService.setRadiusInMiles( radius );
+		} catch ( Exception e ) {
+			return "NOT_STARTED";
+		}
+		return "ok";
+	}
+    
+	@RequestMapping(value = "/settestmode", method = RequestMethod.GET, produces=MediaType.APPLICATION_JSON_UTF8_VALUE )
+	public @ResponseBody String setTestMode( @RequestParam(value = "testmode", required = true) boolean testMode ) {
+		try {
+			federateService.setTestMode( testMode );
+		} catch ( Exception e ) {
+			return "NOT_STARTED";
+		}
+		return "ok";
+	}
+
 	@RequestMapping(value = "/deleteobjectinstance", method = RequestMethod.GET, produces=MediaType.APPLICATION_JSON_UTF8_VALUE )
 	public @ResponseBody String deleteObjectInstance( @RequestParam(value = "handle", required = true) Integer objectInstanceHandle ) {
 		try {
