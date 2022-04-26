@@ -8,9 +8,9 @@ docker run --name sistramproxy --hostname=sistramproxy --network arcanjo \
 	-e PROXY_PASSWORD=nopass \
 	-e PROXY_HOST=172.22.100.61 \
 	-e PROXY_PORT=6160 \
-	-e NON_PROXY_HOSTS="127.0.0.1" \	
+	-e NON_PROXY_HOSTS="127.0.0.1" \
 	-v /etc/localtime:/etc/localtime:ro \
-	-p 36003:8080 \
+	-p 35003:8080 \
 	-d projetoarcanjo/sistramproxy:1.0	
 
 
