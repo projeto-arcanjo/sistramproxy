@@ -15,6 +15,7 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.web.client.HttpClientErrorException;
 import org.springframework.web.client.RestTemplate;
 
+import br.com.cmabreu.services.AuthService;
 import br.com.cmabreu.services.SistramVesselManager;
 
 
@@ -27,6 +28,10 @@ public class SistramCollectorThread implements Runnable {
 	private double lon;
 	private boolean testMode;
 	
+	private boolean useProxy = false;
+	private AuthService authService;
+	
+	
 	public void finish() {
 		this.running = false;
 	}
@@ -35,8 +40,10 @@ public class SistramCollectorThread implements Runnable {
 		this.testMode = testMode;
 	}
 	
-    public SistramCollectorThread( ) {
-    	logger.info("coletor iniciado");
+    public SistramCollectorThread( boolean useProxy, AuthService authService ) {
+    	this.authService = authService;
+    	this.useProxy = useProxy;    	
+    	logger.info("Coletor iniciado");
     	this.radius = 1000;
     	this.lon = -40.81010333333333;
     	this.lat = -22.70383333333332;
@@ -82,6 +89,9 @@ public class SistramCollectorThread implements Runnable {
     
 	private String getVessels() {
 		RestTemplate restTemplate = new RestTemplate();
+		
+		if( useProxy ) restTemplate = new RestTemplate( authService.getFactory() );
+		
 		String responseBody;
 		String url = "http://www.sistram.mar.mil.br/apolo/BuscaEmArea.php?long="+lon+"&lat="+lat+"&raio=" + radius;
 		try {

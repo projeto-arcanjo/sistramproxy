@@ -12,6 +12,7 @@ import javax.annotation.PreDestroy;
 
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Service;
 
@@ -59,6 +60,11 @@ public class FederateService {
     @Value("${frcollector.interval}")
     Integer frInterval; 
 
+	@Value("${proxy.useProxy}")
+	private boolean useProxy;
+	
+    @Autowired
+    AuthService authService;	    
     
     @PreDestroy
 	public void onExit() {
@@ -128,7 +134,7 @@ public class FederateService {
 	// Acionado somente pelo Controller REST
     public void startCollector() {
 		this.scheduler = Executors.newSingleThreadScheduledExecutor();
-		this.frCollectorThread = new SistramCollectorThread( );
+		this.frCollectorThread = new SistramCollectorThread( useProxy, authService );
         this.scheduled =  this.scheduler.scheduleAtFixedRate( this.frCollectorThread, this.frFirstRun, this.frInterval , TimeUnit.SECONDS );
     }
     
