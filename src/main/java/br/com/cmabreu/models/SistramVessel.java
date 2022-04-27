@@ -260,7 +260,9 @@ public class SistramVessel implements Serializable {
 	
 	// Envia somente poscao e orientacao para a RTI
 	public void sendSpatialVariant() throws Exception {
-			
+
+			logger.info(identificador + " " + this.latitude + "," + this.longitude + " ( alt=" + this.altitude + ", head=" + this.orientationPsi + " )" );
+		
 			double[] geodetic = new double[3];
 			geodetic[ Environment.LAT ] = this.latitude;
 			geodetic[ Environment.LON ] = this.longitude;

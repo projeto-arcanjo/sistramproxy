@@ -108,6 +108,7 @@ public class SistramCollectorThread implements Runnable {
 		} catch (HttpClientErrorException e) {
 		    responseBody = e.getResponseBodyAsString();
 		}	
+		
 		return responseBody;
 	}
 	
